@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "material_core",
+    "material_gui",
+    "material_scan",
+    "material_lib"
+]
