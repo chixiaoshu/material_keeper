@@ -12,3 +12,6 @@
 # 操作系统生成的文件
 .DS_Store
 Thumbs.db
+
+# 忽略实际数据
+material_core/data/material.json
