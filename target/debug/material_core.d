@@ -1,1 +1,0 @@
-C:\Users\chixi\Documents\Workspace\Rust\material_keeper\target\debug\material_core.exe: C:\Users\chixi\Documents\Workspace\Rust\material_keeper\material_core\src\main.rs C:\Users\chixi\Documents\Workspace\Rust\material_keeper\material_lib\src\lib.rs
