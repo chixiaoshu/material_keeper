@@ -6,8 +6,8 @@ fn main() {
     let new_item = Material {
         model: "STM32L031G6U6".to_string(),
         brand: "ST".to_string(),
-        package: "UFQFPN-28".to_string(),
-        spec: "ARM Cortex-M0+ MCU 32KB FLASH".to_string(),
+        package: " ".to_string(),
+        spec: " ".to_string(),
         code: "C96514".to_string(),
         quantity: 1,
     };
@@ -25,12 +25,28 @@ fn main() {
             let file = fs::File::open(path).unwrap();
             let reader = std::io::BufReader::new(file);
             materials = serde_json::from_reader(reader).unwrap();
+            
+            // 定义是否已有相同物料的标志位
+            let mut found = false;
+            // 物料的名称或编号若有其一相同则只增加数量
+            for item in &mut materials {
+                if item.model == new_item.model 
+                || item.code == new_item.code
+                {
+                    found = true;
+                    item.quantity += new_item.quantity;
+                    break;
+                }
+            }
+            
+            // 如果没有找到已有物料
+            if !found {
+                materials.push(new_item);
+            }
         }
     } else {
         materials = Vec::new();
     }
-
-    materials.push(new_item);
 
     let file = fs::File::create(path).unwrap();
     let writer = std::io::BufWriter::new(file);
