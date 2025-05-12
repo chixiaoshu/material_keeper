@@ -4,11 +4,11 @@ use material_lib::Material;
 
 fn main() {
     let new_item = Material {
-        model: "STM32L031G6U6".to_string(),
+        model: "STM32F103CBT6".to_string(),
         brand: "ST".to_string(),
         package: " ".to_string(),
         spec: " ".to_string(),
-        code: "C96514".to_string(),
+        code: " ".to_string(),
         quantity: 1,
     };
 
