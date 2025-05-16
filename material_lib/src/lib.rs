@@ -1,7 +1,7 @@
 // material_lib/src/lib.rs
 use serde::{Serialize, Deserialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct Material {
     pub model: String,
     pub brand: String,

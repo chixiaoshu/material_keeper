@@ -1,35 +1,27 @@
+mod file_operations;
+mod material_db;
+
 use std::fs;
 use std::path::Path;
 use material_lib::Material;
+use crate::file_operations::{read_material_from_file, write_material_to_file};
+use crate::material_db::search_by_keyword;
 
 fn main() {
     let new_item = Material {
-        model: "STM32F103CBT6".to_string(),
+        model: "STM32F407VET6".to_string(),
         brand: "ST".to_string(),
-        package: " ".to_string(),
-        spec: " ".to_string(),
-        code: " ".to_string(),
+        package: "LQFP-100".to_string(),
+        code: "C2".to_string(),
+        spec: "ARM Cortex-M4 MCU 512KB FLASH".to_string(),
         quantity: 1,
     };
 
     let path = Path::new("material_core/data/material.json");
-    let mut materials: Vec<Material>;
-
-    if path.exists() {
-        let metadata = fs::metadata(path).unwrap();
-        if metadata.len() == 0 {
-            // 空文件
-            materials = Vec::new();
-        } else {
-            // 正常解析
-            let file = fs::File::open(path).unwrap();
-            let reader = std::io::BufReader::new(file);
-            materials = serde_json::from_reader(reader).unwrap();
-            
-            // 定义是否已有相同物料的标志位
-            let mut found = false;
-            // 物料的名称或编号若有其一相同则只增加数量
-            for item in &mut materials {
+    let mut materials = read_material_from_file(path).unwrap_or_else(|_| Vec::new());
+    let mut found = false;
+    // 物料的名称或编号若有其一相同则只增加数量
+    for item in &mut materials {
                 if item.model == new_item.model 
                 || item.code == new_item.code
                 {
@@ -43,18 +35,12 @@ fn main() {
             if !found {
                 materials.push(new_item);
             }
-        }
-    } else {
-        materials = Vec::new();
-    }
 
-    let file = fs::File::create(path).unwrap();
-    let writer = std::io::BufWriter::new(file);
-    serde_json::to_writer_pretty(writer, &materials).unwrap();
+    write_material_to_file(path, &materials).unwrap();
 
     println!("成功！");
     
-    let key_word = "MCU";
+    let key_word = "ST";
     
     let path = Path::new("material_core/data/material.json");
     let file = fs::File::open(path).expect("Could not open file");
@@ -62,7 +48,5 @@ fn main() {
     let materials: Vec<Material> = serde_json::from_reader(reader).expect("Could not parse JSON");
 
     println!("包含关键字\"{}\"的列表", key_word);
-    for item in materials.iter().filter(|m| m.spec.contains(key_word)){
-        println!("型号: {:<20}, 数量: {}", item.model, item.quantity);
-    }
+    search_by_keyword(&materials, key_word);
 }
